@@ -1,74 +1,22 @@
-appendByParentId(-1);
+var cat = "cat1";
+var files = [["测试1","1.jpg"],
+    ["测试2","2.png"],
+    ["测试3","3.png"],
+    ["测试4","4.png"],
+    ["测试5","5.png"],
+    ["测试6","6.png"],
+    ["测试7","7.png"]];
 
 
-function appendByParentId(parentId) {
-    var fileList = getFileList(parentId);
-    for(var i=0;i<fileList.length;i++){
-        var file = fileList[i];
-        console.log(file);
-        var str = '<div id="'+file["id"]+'" style="padding: 10px">';
-        if(file["isFolder"]){
-            str = str + '<a class="btn btn-info" onclick="appendByParentId('+file["id"]+')">'+file["fileName"]+'</a>';
-            str = str + '<a style="float:right;margin-right: 50px" class="btn btn-danger" role="button" onclick="fileDelete('+file["id"]+')">删除</a>';
-            str = str + '<label style="float:right;margin-right: 570px">'+getLocalTime(file["uploadTime"])+'</label>';
-        }
-        else{
-            str = str + '<a class="btn btn-default">'+file["fileName"]+'</a>';
-            str = str + '<a style="float:right;margin-right: 50px" class="btn btn-danger" role="button" onclick="fileDelete('+file["id"]+')">删除</a>';
-            str = str + '<a style="float:right;margin-right: 200px" class="btn btn-default" role="button" onclick="fileDownload('+file["id"]+')">下载</a>';
-            str = str + '<a style="float:right;margin-right: 20px" class="btn btn-default" role="button" onclick="fileShare('+file["id"]+')">分享</a>';
-            str = str + '<label style="float:right;margin-right: 240px">'+getLocalTime(file["uploadTime"])+'</label>';
-        }
-
-        str = str + '</div>'
-        //var str = "<p>"+file["fileName"]+"<\p>";
-        $('#'+parentId).append(str);
-    }
-    if(parentId!=-1){
-        console.log(parentId);
-        //alert($('#'+parentId+">:first").attr("onclick"));
-        $('#'+parentId+">:first").attr("onclick","remove("+parentId+")");
-    }
+for(var i=0;i<files.length;i++){
+    var file = files[i];
+    var oneImage = "<div class='col-xs-6 col-md-3'>";
+    oneImage += " <a class = 'thumbnail' onclick='changeSrc(\""+file[0]+"\",\"image/"+cat+"/"+file[1]+"\")'>";
+    oneImage += "<img src='image/"+cat+"/"+file[1]+"' data-target='.bs-example-modal-lg' data-toggle='modal' >";
+    oneImage += "</a></div>";
+    $("#photos").append(oneImage);
 }
-function getFileList(parentId) {
-    var result = {};
-    $.ajax({
-        url:"/user/file",
-        type:"get",
-        async:false,
-        dataType:"json",
-        data:{
-            parentId:parentId
-        },
-        success:function (data) {
-            result = data;
-        }
-    });
-    return result;
+function changeSrc(title,imageUrl) {
+    $("#theTitle").text(title);
+    $("#theImg").attr("src",imageUrl);
 }
-
-function remove(paretId) {
-    $('#'+paretId+'>div').fadeToggle();
-}
-
-window.funcList = {
-    test:function () {
-        alert("hi !test");
-    }
-};
-
-function fileDownload(fileId) {
-    alert(fileId);
-}
-function fileShare(fileId) {
-    alert(fileId);
-}
-function fileDelete(fileId) {
-    alert(fileId);
-}
-
-function getLocalTime(nS) {
-    return new Date(parseInt(nS)).toLocaleString().replace(/年|月/g, "-").replace(/日/g, " ");
-}
-
-//fuck css+js+html
